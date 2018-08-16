@@ -10,7 +10,7 @@ with open(csv_path, newline='', encoding="UTF-8") as csv_file:
     # parse out header
     next(csv_reader)
 
-    # add month-year column profit/loss column into their own lists
+    # add month-year column and profit/loss column into their own lists
     months_list = []
     change_list = []
     for row in csv_reader:
@@ -19,13 +19,10 @@ with open(csv_path, newline='', encoding="UTF-8") as csv_file:
 
 total_net_amount = sum(i for i in change_list)
 
-# TODO make this into list comprehension
-# start at range 1 to avoid using a negative index
-monthly_change = []
-for i in range(1, len(change_list)):
-    monthly_change.append(change_list[i] - change_list[i - 1])
+# profit change between months. Starting at index 1 to avoid using a negative index
+monthly_change = [change_list[i] - change_list[i - 1] for i in range(1, len(change_list))]
 
-average_change = round(sum(monthly_change)/(len(change_list)-1), 2)
+average_change = round(sum(monthly_change)/(len(monthly_change)), 2)
 
 # index of the max/min profit change
 max_change = max(monthly_change)
@@ -33,11 +30,20 @@ min_change = min(monthly_change)
 max_change_index = monthly_change.index(max_change)
 min_change_index = monthly_change.index(min_change)
 
-# TODO change to f-strings
 print('Financial Analysis')
 print('----------------------------')
 print(f'Total Months: {len(months_list)}')
 print(f'Total: $ {total_net_amount}')
 print(f'Average Change: ${average_change}')
-print(f'Greatest Increase in Profits {months_list[max_change_index]} ({max_change})')
-print(f'Greatest Decrease in Profits {months_list[min_change_index]} ({min_change})')
+print(f'Greatest Increase in Profits {months_list[max_change_index]} (${max_change})')
+print(f'Greatest Decrease in Profits {months_list[min_change_index]} (${min_change})')
+
+output_path = os.path.join('main.txt')
+
+with open(output_path, 'w', newline='') as text_file:
+    csv_writer = csv.writer(text_file)
+    csv_writer.writerow('Financial Analysis')
+    csv_writer.writerow('----------------------------')
+    csv_writer.writerow(f'Total Months: {len(months_list)}')
+    csv_writer.writerow()
+    csv_writer.writerow()
