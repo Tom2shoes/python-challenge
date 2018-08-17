@@ -4,6 +4,8 @@ import csv
 csv_path = os.path.join('../..', 'UCIRV201807DATA4-Class-Repository-DATA/02-Homework/03-Python/'
                                  'Instructions/PyBank/Resources/budget_data.csv')
 
+output_path = os.path.join('main.csv')
+
 with open(csv_path, newline='', encoding="UTF-8") as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
 
@@ -19,10 +21,19 @@ with open(csv_path, newline='', encoding="UTF-8") as csv_file:
 
 total_net_amount = sum(i for i in change_list)
 
-# profit change between months. Starting at index 1 to avoid using a negative index
-monthly_change = [change_list[i] - change_list[i - 1] for i in range(1, len(change_list))]
+# list of the change in profit between months
+monthly_change = []
+for i in range(len(change_list)):
+    if (i - 1) < 0:
+        monthly_change.append(0)
+    else:
+        monthly_change.append(change_list[i] - change_list[i - 1])
 
-average_change = round(sum(monthly_change)/(len(monthly_change)), 2)
+# counting the number of months that have a change in value
+count_of_monthly_changes = sum(1 for x in monthly_change if x != 0)
+
+#
+average_change = round(sum(monthly_change)/count_of_monthly_changes, 2)
 
 # index of the max/min profit change
 max_change = max(monthly_change)
@@ -38,12 +49,12 @@ print(f'Average Change: ${average_change}')
 print(f'Greatest Increase in Profits {months_list[max_change_index]} (${max_change})')
 print(f'Greatest Decrease in Profits {months_list[min_change_index]} (${min_change})')
 
-output_path = os.path.join('main.txt')
-
-with open(output_path, 'w', newline='') as text_file:
-    csv_writer = csv.writer(text_file)
-    csv_writer.writerow('Financial Analysis')
-    csv_writer.writerow('----------------------------')
-    csv_writer.writerow(f'Total Months: {len(months_list)}')
-    csv_writer.writerow()
-    csv_writer.writerow()
+with open(output_path, 'w', newline='') as csv_file:
+    csv_writer = csv.writer(csv_file, delimiter=',')
+    csv_writer.writerow(['Financial Analysis'])
+    csv_writer.writerow(['----------------------------'])
+    csv_writer.writerow(['Total Months:', f'{len(months_list)}'])
+    csv_writer.writerow(['Total:', f'${total_net_amount}'])
+    csv_writer.writerow(['Average Change:', f'${average_change}'])
+    csv_writer.writerow(['Greatest Increase in Profits:', f'{months_list[max_change_index]}', f'${max_change}'])
+    csv_writer.writerow(['Greatest Decrease in Profits:', f'{months_list[min_change_index]}', f'${min_change}'])
