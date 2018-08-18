@@ -4,8 +4,6 @@ import csv
 csv_path = os.path.join('../..', 'UCIRV201807DATA4-Class-Repository-DATA/02-Homework/03-Python/'
                                  'Instructions/PyBank/Resources/budget_data.csv')
 
-output_path = os.path.join('main.csv')
-
 with open(csv_path, newline='', encoding="UTF-8") as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
 
@@ -48,6 +46,8 @@ print(f'Total: $ {total_net_amount}')
 print(f'Average Change: ${average_change}')
 print(f'Greatest Increase in Profits {months_list[max_change_index]} (${max_change})')
 print(f'Greatest Decrease in Profits {months_list[min_change_index]} (${min_change})')
+
+output_path = os.path.join('main.csv')
 
 with open(output_path, 'w', newline='') as csv_file:
     csv_writer = csv.writer(csv_file, delimiter=',')
